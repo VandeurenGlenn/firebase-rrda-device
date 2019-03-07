@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const { readFile } = require('fs');
+const { join } = require('path');
 
 if (process.platform === 'win32') return;
 return readFile(join(__dirname, 'inited'), (err, data) => {
