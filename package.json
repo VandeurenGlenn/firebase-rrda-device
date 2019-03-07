@@ -1,6 +1,6 @@
 {
   "name": "firebase-rrda-device",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Control your rrda device with firebase",
   "main": "index.js",
   "module": "src/index.js",
