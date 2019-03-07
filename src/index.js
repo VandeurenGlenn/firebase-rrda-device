@@ -5,6 +5,7 @@ import { readFile, writeFile } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { promisify } from 'util';
+import api from 'rrda';
 import ClockScript from './clock-script';
 
 const read = promisify(readFile);
@@ -89,15 +90,19 @@ export default async user => {
 
       const init = () => deviceRef.set({ ...defaultOptions, ...{ id: uid } });
 
-      const snapIt = snap => {
+      const snapIt = async snap => {
         const key = snap.key;
         const value = snap.val();
         if (!value && value !== 0) return init().then(() => deviceRef.once('value').then(snapIt));
         if (key === uid) {
           // on || off
+          if (value.on) await api.on(1);
+          else await api.off(1);
+
           emitter.emit('on', value.on);
 
           // dim percentage
+          await api.dim(value.dim);
           emitter.emit('dim', value.dim);
 
           // clock config

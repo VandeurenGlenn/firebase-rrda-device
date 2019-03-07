@@ -21,7 +21,8 @@
   "homepage": "https://github.com/vandeurenglenn/firebase-rrda-device#readme",
   "dependencies": {
     "firebase": "^5.8.5",
-    "rpi-rrda-device": "^0.1.0"
+    "rpi-rrda-device": "^0.1.0",
+    "rrda": "^1.0.0"
   },
   "devDependencies": {
     "rollup": "^1.4.1"
