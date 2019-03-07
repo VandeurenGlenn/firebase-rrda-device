@@ -33,8 +33,6 @@ export default class ClockScript {
     constructor(ref, config) {
       this.ref = ref;
       this.config = config;
-
-      this.run();
     }
 
     on() {

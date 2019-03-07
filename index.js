@@ -9,7 +9,7 @@ var fs = require('fs');
 var path = require('path');
 var os = require('os');
 var util = require('util');
-var api = _interopDefault(require('rrda'));
+var rrda = require('rrda');
 
 const ms = {
   hour: ms => (Number(ms) / 60000) / 60
@@ -63,8 +63,6 @@ class ClockScript {
     constructor(ref, config) {
       this.ref = ref;
       this.config = config;
-
-      this.run();
     }
 
     on() {
@@ -269,25 +267,34 @@ var index = async user => {
         if (!value && value !== 0) return init().then(() => deviceRef.once('value').then(snapIt));
         if (key === uid) {
           // on || off
-          if (value.on) await api.on(1);
-          else await api.off(1);
+          if (value.on) await rrda.on(1);
+          else await rrda.off(1);
 
           emitter.emit('on', value.on);
 
           // dim percentage
-          await api.dim(value.dim);
+          await rrda.dim(value.dim);
           emitter.emit('dim', value.dim);
 
           // clock config
           emitter.emit('clock', value.clock); // maybe remove ...
           // if (clock && clock.running) clock.stop();
           clock = new ClockScript(deviceRef, value.clock);
+          if (value.enabled) clock.run();
         } else {
           if (key === 'clock') {
             if (clock && clock.running) {
               clock.config = value;
               clock.run();
             } else clock = new ClockScript(deviceRef, value);
+          } else if (key === 'on') {
+            if (value) await rrda.on(1);
+            else await rrda.off(1);
+          } else if (key === 'dim') {
+            await rrda.dim(value);
+          } else if (key === 'enabled') {
+            if (value && !clock.running) clock.run();
+            else if (!value && clock.running) clock.stop(clock.current.timeout, clock.current.job);
           }
           emitter.emit(key, value);
         }
