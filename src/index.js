@@ -48,7 +48,7 @@ const deviceState = async () => {
   // TODO: write mode
   let data;
   try {
-    data = await read(join(HOME, 'firebase-rrda-device'));
+    data = await read(join(HOME, '.firebase-rrda-device'));
     data = JSON.parse(data.toString());
   } catch (e) {
     data = {
@@ -76,12 +76,12 @@ export default async user => {
   if (!user.username) {
     user.username = process.argv.indexOf('username')
     user.username = process.argv[user.username + 1];
-    if (user.username) await write(join(HOME, 'firebase-rrda-device'), JSON.stringify({user, ap}));
+    if (user.username) await write(join(HOME, '.firebase-rrda-device'), JSON.stringify({user, ap}));
   }
   if (!user.password) {
     user.password = process.argv.indexOf('password')
     user.password = process.argv[user.password + 1];
-    if (user.password) await write(join(HOME, 'firebase-rrda-device'), JSON.stringify({user, ap}));
+    if (user.password) await write(join(HOME, '.firebase-rrda-device'), JSON.stringify({user, ap}));
   }
 
   firebase.auth().onAuthStateChanged(user => {

@@ -9,6 +9,7 @@ var fs = require('fs');
 var path = require('path');
 var os = require('os');
 var util = require('util');
+var api = _interopDefault(require('rrda'));
 
 const ms = {
   hour: ms => (Number(ms) / 60000) / 60
@@ -224,7 +225,7 @@ const deviceState = async () => {
   // TODO: write mode
   let data;
   try {
-    data = await read(path.join(HOME, 'firebase-rrda-device'));
+    data = await read(path.join(HOME, '.firebase-rrda-device'));
     data = JSON.parse(data.toString());
   } catch (e) {
     data = {
@@ -248,12 +249,12 @@ var index = async user => {
   if (!user.username) {
     user.username = process.argv.indexOf('username');
     user.username = process.argv[user.username + 1];
-    if (user.username) await write(path.join(HOME, 'firebase-rrda-device'), JSON.stringify({user, ap}));
+    if (user.username) await write(path.join(HOME, '.firebase-rrda-device'), JSON.stringify({user, ap}));
   }
   if (!user.password) {
     user.password = process.argv.indexOf('password');
     user.password = process.argv[user.password + 1];
-    if (user.password) await write(path.join(HOME, 'firebase-rrda-device'), JSON.stringify({user, ap}));
+    if (user.password) await write(path.join(HOME, '.firebase-rrda-device'), JSON.stringify({user, ap}));
   }
 
   firebase.auth().onAuthStateChanged(user => {
@@ -262,15 +263,19 @@ var index = async user => {
 
       const init = () => deviceRef.set({ ...defaultOptions, ...{ id: uid } });
 
-      const snapIt = snap => {
+      const snapIt = async snap => {
         const key = snap.key;
         const value = snap.val();
         if (!value && value !== 0) return init().then(() => deviceRef.once('value').then(snapIt));
         if (key === uid) {
           // on || off
+          if (value.on) await api.on(1);
+          else await api.off(1);
+
           emitter.emit('on', value.on);
 
           // dim percentage
+          await api.dim(value.dim);
           emitter.emit('dim', value.dim);
 
           // clock config
