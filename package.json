@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/vandeurenglenn/firebase-rrda-device#readme",
   "dependencies": {
-    "firebase": "^5.8.5",
+    "firebase": "^5.11.1",
     "rpi-rrda-device": "^0.1.0",
     "rrda": "^1.0.0"
   },
   "devDependencies": {
-    "rollup": "^1.4.1"
+    "rollup": "^1.11.3"
   }
 }
